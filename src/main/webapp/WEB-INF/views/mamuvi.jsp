@@ -14,6 +14,6 @@
 <body ng-controller="TestController as ctrl">
 	Welcome to mamuvi {{ctrl.welcome}}
 	<input ng-model="ctrl.welcome" />
-
+	hello: {{ctrl.hello}}
 </body>
 </html>
