@@ -1,18 +1,26 @@
 package com.app.mamuvi.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import com.app.mamuvi.jackson.LocalDateDeserializer;
 import com.app.mamuvi.jackson.LocalDateSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieDTO {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class MovieDTO implements Serializable {
+
+  private static final long serialVersionUID = -3381363375514537169L;
 
   private Long id;
 
@@ -32,7 +40,7 @@ public class MovieDTO {
   
   private Long resolution;
   
-  private String language;
+  private Long language;
   
   private String type;
   

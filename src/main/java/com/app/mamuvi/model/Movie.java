@@ -9,9 +9,12 @@ import javax.persistence.Table;
 import com.app.mamuvi.dto.MovieDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -45,7 +48,7 @@ public class Movie {
   private Long resolution;
   
   @Column(name = "language")
-  private String language;
+  private Long language;
   
   //The loai phim: luu id, chon nhieu, cach nhau boi dau ','
   @Column(name = "movie_type")
