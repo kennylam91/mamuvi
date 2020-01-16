@@ -30,12 +30,11 @@ public class MovieServiceImpl implements MovieService {
     String movieTypeName = appParamDao.findAppParamsByIds(CommonUtils.splitStringToLongListByComma(movieDetailDTO.getType()))
         .stream().map(AppParamDTO::getName)
         .collect(Collectors.joining(", "));
-    String prodCompanyName = appParamDao.findAppParamsByIds(CommonUtils.splitStringToLongListByComma(movieDetailDTO.getProdCompanies()))
-        .stream().map(AppParamDTO::getName)
-        .collect(Collectors.joining(", "));
+//    String prodCompanyName = appParamDao.findAppParamsByIds(CommonUtils.splitStringToLongListByComma(movieDetailDTO.getProdCompanies()))
+//        .stream().map(AppParamDTO::getName)
+//        .collect(Collectors.joining(", "));
     movieDetailDTO.setCountryName(countryName);
     movieDetailDTO.setMovieTypeName(movieTypeName);
-    movieDetailDTO.setProdCompanyName(prodCompanyName);
     return movieDetailDTO;
   }
 

@@ -1,4 +1,4 @@
-package com.app.mamuvi.bot;
+package com.app.mamuvi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class MovieInfo {
+public class MovieInfoDTO {
 
   private String enTitle;
   

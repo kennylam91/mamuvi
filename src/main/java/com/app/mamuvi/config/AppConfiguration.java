@@ -21,6 +21,7 @@ public class AppConfiguration extends WebMvcConfigurerAdapter {
     viewResolver.setPrefix("/WEB-INF/views/");
     viewResolver.setSuffix(".jsp");
     registry.viewResolver(viewResolver);
+//    registry.scriptTemplate().prefix("/WEB-INF/views/").suffix(".html");
   }
 
   @Override

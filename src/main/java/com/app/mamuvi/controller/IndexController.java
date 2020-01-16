@@ -10,6 +10,6 @@ public class IndexController {
 
   @GetMapping
   public String getIndexPage() {
-    return "mamuvi";
+    return "index";
   }
 }

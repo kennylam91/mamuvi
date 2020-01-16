@@ -58,6 +58,15 @@ public class Movie {
   @Column(name = "production_companies")
   private String prodCompanies;
   
+  @Column(name = "movie_url")
+  private String movieUrl;
+  
+  @Column(name = "img_url")
+  private String imgUrl;
+  
+  @Column(name = "director")
+  private String director;
+  
   public static Movie mapFromMovieDTO(MovieDTO movieDTO) {
     Movie movie = new Movie();
     movie.setId(movieDTO.getId());
@@ -71,6 +80,9 @@ public class Movie {
     movie.setLanguage(movieDTO.getLanguage());
     movie.setType(movieDTO.getType());
     movie.setProdCompanies(movieDTO.getProdCompanies());
+    movie.setDirector(movieDTO.getDirector());
+    movie.setImgUrl(movieDTO.getImgUrl());
+    movie.setMovieUrl(movieDTO.getMovieUrl());
     return movie;
   }
 }
