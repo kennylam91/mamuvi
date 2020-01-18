@@ -2,13 +2,18 @@ package com.app.mamuvi.service.impl;
 
 
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.app.mamuvi.dao.AppParamDao;
 import com.app.mamuvi.dao.MovieDao;
 import com.app.mamuvi.dto.AppParamDTO;
+import com.app.mamuvi.dto.AppParamSearchDTO;
 import com.app.mamuvi.dto.MovieDTO;
 import com.app.mamuvi.dto.MovieDetailDTO;
+import com.app.mamuvi.dto.MovieSearchDTO;
+import com.app.mamuvi.dto.ResultSetDTO;
+import com.app.mamuvi.model.Movie;
 import com.app.mamuvi.service.MovieService;
 import com.app.mamuvi.util.CommonUtils;
 
@@ -24,23 +29,24 @@ public class MovieServiceImpl implements MovieService {
   @Override
   public MovieDetailDTO getMovieDetailById(Long id) {
     MovieDetailDTO movieDetailDTO = movieDao.getMovieById(id);
-    String countryName = appParamDao.findAppParamsByIds(CommonUtils.splitStringToLongListByComma(movieDetailDTO.getCountry()))
-      .stream().map(AppParamDTO::getName)
-      .collect(Collectors.joining(", "));
-    String movieTypeName = appParamDao.findAppParamsByIds(CommonUtils.splitStringToLongListByComma(movieDetailDTO.getType()))
-        .stream().map(AppParamDTO::getName)
-        .collect(Collectors.joining(", "));
-//    String prodCompanyName = appParamDao.findAppParamsByIds(CommonUtils.splitStringToLongListByComma(movieDetailDTO.getProdCompanies()))
-//        .stream().map(AppParamDTO::getName)
-//        .collect(Collectors.joining(", "));
-    movieDetailDTO.setCountryName(countryName);
-    movieDetailDTO.setMovieTypeName(movieTypeName);
     return movieDetailDTO;
   }
 
   @Override
   public Long saveMovie(MovieDTO movieDTO) {
-    return movieDao.saveMovie(movieDTO);
+    Movie movie = Movie.mapFromMovieDTO(movieDTO);
+    return movieDao.saveMovie(movie);
+  }
+
+  @Override
+  public void updateMovie(MovieDTO movieDTO) throws Exception {
+    Movie movie = Movie.mapFromMovieDTO(movieDTO);
+    movieDao.updateMovie(movie);
+  }
+
+  @Override
+  public ResultSetDTO<Movie> searchMovie(MovieSearchDTO movieSearchDTO) {
+    return movieDao.searchMovie(movieSearchDTO);
   }
 
   

@@ -1,8 +1,7 @@
 package com.app.mamuvi.dto;
 
 import java.io.Serializable;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +11,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppParamDTO implements Serializable{
-
-  private static final long serialVersionUID = -5408355088010540203L;
+public class AppParamSearchDTO implements Serializable {
+  
+  private static final long serialVersionUID = -6948794643873817816L;
 
   private Long id;
   
@@ -23,4 +22,6 @@ public class AppParamDTO implements Serializable{
   private String name;
   
   private String description;
+  
+  private List<Long> ids;
 }

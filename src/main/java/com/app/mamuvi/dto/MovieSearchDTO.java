@@ -21,13 +21,13 @@ public class MovieSearchDTO implements Serializable{
   
   private LocalDate releasedDateS;
   
-  private String countryS;
+  private Long countryS;
   
-  private String lengthS;
+  private Long lengthS;
   
   private Long resolutionS;
   
-  private String typeS;
+  private Long typeS;
   
   private Long page;
   

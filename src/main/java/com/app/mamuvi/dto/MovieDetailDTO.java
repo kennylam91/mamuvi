@@ -22,7 +22,6 @@ public class MovieDetailDTO extends MovieDTO implements Serializable{
   private String languageName;
   private String movieTypeName;
   
-  private String directorName;
   
 
 }

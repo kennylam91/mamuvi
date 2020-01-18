@@ -39,20 +39,20 @@ public class MovieExtractingServiceImpl implements MovieExtractingService{
   
   Logger log = LogManager.getLogger(MovieExtractingServiceImpl.class);
   
-  public void updateMovies() {
-    List<MovieInfoDTO> list = getWeeklyTopMoviesOfPhimmoi();
-    List<MovieDetailDTO> detailList = new ArrayList<>();
-    boolean success = false;
-    try {
-     detailList = getMoviesFromMovieInfos(list); 
-     success = true;
-    }catch(Exception e){
-      e.printStackTrace();
-      success = false;
-    }
-     
-    detailList.stream().forEach(movie -> movieDao.saveMovie(movie));
-  }
+//  public void updateMovies() {
+//    List<MovieInfoDTO> list = getWeeklyTopMoviesOfPhimmoi();
+//    List<MovieDetailDTO> detailList = new ArrayList<>();
+//    boolean success = false;
+//    try {
+//     detailList = getMoviesFromMovieInfos(list); 
+//     success = true;
+//    }catch(Exception e){
+//      e.printStackTrace();
+//      success = false;
+//    }
+//     
+//   detailList.stream().forEach(movie -> movieDao.saveMovie(movie));
+//  }
   
   public List<MovieDetailDTO> getMoviesFromMovieInfos(List<MovieInfoDTO> movieInfos){
     List<MovieDetailDTO> movies = movieInfos.stream()
@@ -77,7 +77,7 @@ public class MovieExtractingServiceImpl implements MovieExtractingService{
             movieDetailDTO.setCountryName(countries);
             movieDetailDTO.setLanguageName(language);
             movieDetailDTO.setLength(Long.parseLong(StringUtils.getDigits(length)));
-            movieDetailDTO.setDirectorName(director);
+            movieDetailDTO.setDirector(director);
             movieDetailDTO.setReleasedDate(LocalDate.of(Integer.parseInt(year), 01, 01));
             movieDetailDTO.setResolutionName(resolution);
             movieDetailDTO.setCountryName(countries);
@@ -216,6 +216,14 @@ public class MovieExtractingServiceImpl implements MovieExtractingService{
   public String getLength(String movieHtml){
     String value = Jsoup.parse(movieHtml).getElementsContainingOwnText("phút").html();
     return value;
+    
+  }
+
+
+
+  @Override
+  public void updateMovies() {
+    // TODO Auto-generated method stub
     
   }
   

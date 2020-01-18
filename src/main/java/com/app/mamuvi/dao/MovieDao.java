@@ -8,9 +8,11 @@ import com.app.mamuvi.model.Movie;
 
 public interface MovieDao {
 
-  Long saveMovie(MovieDTO movie);
+  Long saveMovie(Movie movie);
+  
+  void updateMovie(Movie movie) throws Exception;
   
   MovieDetailDTO getMovieById(Long id);
   
-  ResultSetDTO<Movie> movieResultSetDTO(MovieSearchDTO movieSearchDTO); 
+  ResultSetDTO<Movie> searchMovie(MovieSearchDTO movieSearchDTO); 
 }
