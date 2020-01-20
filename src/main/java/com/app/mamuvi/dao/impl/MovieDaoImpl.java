@@ -140,11 +140,10 @@ public class MovieDaoImpl implements MovieDao {
   @SuppressWarnings("unchecked")
   @Override
   public ResultSetDTO<Movie> searchMovie(MovieSearchDTO movieS) {
-
     Session session = null;
     String titleS = movieS.getTitleS();
-    Long countryS = movieS.getCountryS();
-    Long typeS = movieS.getTypeS();
+    Long[] countryS = movieS.getCountryS();
+    Long[] typeS = movieS.getTypeS();
     Long recordsPP = movieS.getRecordsPP();
     Long page = movieS.getPage();
     recordsPP = recordsPP!= null? recordsPP : 20L;
@@ -162,18 +161,39 @@ public class MovieDaoImpl implements MovieDao {
                 + " left join app_params ap2 on m.language = ap2.id"
                 + " where 1 = 1 ");
       if(!StringUtils.isEmpty(titleS)) {
-        sqlBd.append(" and lower(m.title) ~ :titleS");
-        sqlCountBd.append(" and lower(m.title) ~ :titleS");
+        sqlBd.append(" and lower(m.en_convert_title) ~ :titleS");
+        sqlCountBd.append(" and lower(m.en_convert_title) ~ :titleS");
       }
       if(countryS != null) {
-        sqlBd.append(" and m.country ~ :countryS");
-        sqlCountBd.append(" and m.country ~ :countryS");
+        if(countryS.length > 0) {
+          StringBuilder countrySqlBd = new StringBuilder();
+          for(int i = 0; i<countryS.length;i++) {
+            String countryi = (new StringBuilder("country").append(i)).toString();
+            countrySqlBd.append(" and :"+ countryi + " = any("
+                + " select cast(unnest(string_to_array(country,',')) as int)"
+                + " from movies m1 "
+                + " where m.id = m1.id )");
+          }
+          sqlBd.append(countrySqlBd);
+          sqlCountBd.append(countrySqlBd);
+        }
       }
       if(typeS != null) {
-        sqlBd.append(" and m.movie_type ~ :typeS");
-        sqlCountBd.append(" and m.movie_type ~ :typeS");
+        if(typeS.length > 0) {
+          StringBuilder typeSqlBd = new StringBuilder();
+          for(int i = 0; i<typeS.length;i++) {
+            String typei = (new StringBuilder("type").append(i)).toString();
+            typeSqlBd.append(" and :"+ typei + " = any("
+                + " select cast(unnest(string_to_array(movie_type,',')) as int)"
+                + " from movies m1 "
+                + " where m.id = m1.id )");
+          }
+          sqlBd.append(typeSqlBd);
+          sqlCountBd.append(typeSqlBd);
+        }
       }
-      sqlBd.append(")")
+      
+      sqlBd.append(") ")
            .append(SQL_SELECT_COUNTRYNAME_AND_MOVIETYPENAME)
            .append(" from table1")
            .append(" order by title")
@@ -191,12 +211,22 @@ public class MovieDaoImpl implements MovieDao {
         sqlCountQuery.setParameter("titleS", StringUtils.lowerCase(titleS));
       }
       if(countryS != null) {
-        sqlQuery.setParameter("countryS", String.valueOf(countryS));
-        sqlCountQuery.setParameter("countryS", String.valueOf(countryS));
+        if(countryS.length > 0) {
+          for(int i = 0; i< countryS.length ; i++) {
+            String countryi = (new StringBuilder("country").append(i)).toString();
+            sqlQuery.setParameter(countryi,countryS[i]);
+            sqlCountQuery.setParameter(countryi,countryS[i]);
+          }
+        }
       }
       if(typeS != null) {
-        sqlQuery.setParameter("typeS", String.valueOf(typeS));
-        sqlCountQuery.setParameter("typeS", String.valueOf(typeS));
+        if(typeS.length > 0) {
+          for(int i = 0; i< typeS.length ; i++) {
+            String typei = (new StringBuilder("type").append(i)).toString();
+            sqlQuery.setParameter(typei,typeS[i]);
+            sqlCountQuery.setParameter(typei,typeS[i]);
+          }
+        }
       }
       sqlQuery.setParameter("recordsPP", recordsPP)
         .setParameter("offset", recordsPP*(page-1));

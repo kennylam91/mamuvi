@@ -20,4 +20,12 @@ public class CommonUtilsTest {
     assertEquals(Arrays.asList(1L), CommonUtils.splitStringToLongListByComma("1"));
     assertEquals(Collections.emptyList(), CommonUtils.splitStringToLongListByComma("1,a"));
   }
+  
+  @Test
+  public void testConvertVnToEn() {
+    String vnStr = "Săn Lùng Dị Nhân";
+    String expected = "San Lung Di Nhan";
+    assertEquals(expected, CommonUtils.convertVnToEn(vnStr));
+    assertEquals("Phim chien tranh, Phim tinh cam",CommonUtils.convertVnToEn("Phim chiến tranh, Phim tình cảm"));
+  }
 }

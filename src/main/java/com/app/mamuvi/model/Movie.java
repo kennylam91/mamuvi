@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import com.app.mamuvi.dto.MovieDTO;
+import com.app.mamuvi.util.CommonUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -67,6 +68,9 @@ public class Movie {
   @Column(name = "director")
   private String director;
   
+  @Column(name = "en_convert_title")
+  private String enConvertTitle;
+  
   public static Movie mapFromMovieDTO(MovieDTO movieDTO) {
     Movie movie = new Movie();
     movie.setId(movieDTO.getId());
@@ -83,6 +87,7 @@ public class Movie {
     movie.setDirector(movieDTO.getDirector());
     movie.setImgUrl(movieDTO.getImgUrl());
     movie.setMovieUrl(movieDTO.getMovieUrl());
+    movie.setEnConvertTitle(CommonUtils.convertVnToEn(movieDTO.getTitle()));
     return movie;
   }
 }

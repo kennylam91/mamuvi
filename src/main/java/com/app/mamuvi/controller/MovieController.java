@@ -57,7 +57,7 @@ public class MovieController {
     }
   }
   
-  @GetMapping("/search")
+  @PostMapping("/search")
   public ResponseEntity<ResultSetDTO<Movie>> searchMovie(@RequestBody MovieSearchDTO movieSearchDTO){
     ResultSetDTO<Movie> resultSet = movieService.searchMovie(movieSearchDTO);
     if(resultSet != null && !resultSet.getList().isEmpty() && resultSet.getTotalRecords() > 0) {
