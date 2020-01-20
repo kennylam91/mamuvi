@@ -30,37 +30,49 @@ public class MovieDaoImpl implements MovieDao {
 
   Logger log = LogManager.getLogger(MovieDaoImpl.class);
   
-  static final String SQL_SELECT_MOVIE_DETAIL_DTO = ""
-      + " select "
-      + " m.id as id, "
-      + " m.title as title, "
-      + " m.description as description, "
-      + " m.released_date as releasedDate,"
-      + " m.country as country,"
-      + " m.length as length,"
-      + " m.resolution as resolution,"
-      + " m.language as language,"
-      + " m.movie_type as type,"
-      + " m.production_companies as prodCompanies,"
-      + " m.imdb_rating as imdb,"
-      + " m.director as director,"
-      + " m.movie_url as movieUrl,"
-      + " m.img_url as imgUrl,"
-      + " ap.name as resolutionName,"
-      + " ap2.name as languageName"
+  static final String SQL_SELECT_MOVIE_DETAIL_DTO = new StringBuilder()
+      .append(" select ")
+      .append(" m.id as id, ")
+      .append(" m.title as title, ")
+      .append(" m.description as description, ")
+      .append(" m.released_date as releasedDate,")
+      .append(" m.country as country,")
+      .append(" m.length as length,")
+      .append(" m.resolution as resolution,")
+      .append(" m.language as language,")
+      .append(" m.movie_type as type,")
+      .append(" m.production_companies as prodCompanies,")
+      .append(" m.imdb_rating as imdb,")
+      .append(" m.director as director,")
+      .append(" m.movie_url as movieUrl,")
+      .append(" m.img_url as imgUrl,")
+      .append(" m.trailer as trailer,")
+      .append(" m.casts as casts,")
+      .append(" ap.name as resolutionName,")
+      .append(" ap2.name as languageName")
+      .toString()
       ;
-  static final String SQL_SELECT_COUNTRYNAME_AND_MOVIETYPENAME = ""
-      + " select *,"
-      + " ( select string_agg(ap3.name,', ')"
-      + " from app_params ap3"
-      + " where ap3.id = any("
-      + "   select cast(unnest(string_to_array(tb1.country,',')) as int)"
-      + "   from table1 tb1 )) as countryName,"
-      + " ( select string_agg(ap4.name,', ')"
-      + " from app_params ap4"
-      + " where ap4.id = any("
-      + "   select cast(unnest(string_to_array(tb1.type,',')) as int)"
-      + "   from table1 tb1 )) as movieTypeName";
+  static final String SQL_SELECT_COUNTRYNAME_AND_MOVIETYPENAME_AND_CASTSNAME = new StringBuilder()
+      .append(" select *,")
+      .append(" ( select string_agg(ap3.name,', ')")
+      .append("   from app_params ap3")
+      .append("   where ap3.id = any(")
+      .append("       select cast(unnest(string_to_array(tb1.country,',')) as int)")
+      .append("       from table1 tb1 )")
+      .append(" ) as countryName,")
+      .append(" ( select string_agg(ap4.name,', ')")
+      .append("   from app_params ap4")
+      .append("   where ap4.id = any(")
+      .append("       select cast(unnest(string_to_array(tb1.type,',')) as int)")
+      .append("       from table1 tb1 )")
+      .append(" ) as movieTypeName,")
+      .append(" ( select string_agg(ap5.name,', ')")
+      .append("   from app_params ap5")
+      .append("   where ap5.id = any(")
+      .append("       select cast(unnest(string_to_array(tb1.casts,',')) as int)")
+      .append("       from table1 tb1 )")
+      .append(" ) as castsName")
+      .toString();
   
   private void addScalarMovieDetailDTO(SQLQuery sql){
     sql.addScalar("id", LongType.INSTANCE)
@@ -80,7 +92,10 @@ public class MovieDaoImpl implements MovieDao {
       .addScalar("movieUrl",StringType.INSTANCE)
       .addScalar("imgUrl",StringType.INSTANCE)
       .addScalar("countryName",StringType.INSTANCE)
-      .addScalar("movieTypeName",StringType.INSTANCE);
+      .addScalar("movieTypeName",StringType.INSTANCE)
+      .addScalar("trailer",StringType.INSTANCE)
+      .addScalar("casts",StringType.INSTANCE)
+      .addScalar("castsName",StringType.INSTANCE);
   }
   
   @Override
@@ -114,12 +129,11 @@ public class MovieDaoImpl implements MovieDao {
       session = sessionFactory.openSession();
       StringBuilder sqlBd = new StringBuilder("with table1 as (");
       sqlBd.append(SQL_SELECT_MOVIE_DETAIL_DTO)
-           .append(" "
-                + " from movies m "
-                + " left join app_params ap on m.resolution = ap.id"
-                + " left join app_params ap2 on m.language = ap2.id"
-                + " where m.id = :id )")
-           .append(SQL_SELECT_COUNTRYNAME_AND_MOVIETYPENAME)
+           .append(" from movies m ")
+           .append(" left join app_params ap on m.resolution = ap.id")
+           .append(" left join app_params ap2 on m.language = ap2.id")
+           .append(" where m.id = :id )")
+           .append(SQL_SELECT_COUNTRYNAME_AND_MOVIETYPENAME_AND_CASTSNAME)
            .append(" from table1");
       
       SQLQuery sqlQuery = session.createSQLQuery(sqlBd.toString());
@@ -155,11 +169,10 @@ public class MovieDaoImpl implements MovieDao {
       StringBuilder sqlCountBd = new StringBuilder("select count(*) as totalRecords from movies m");
       sqlCountBd.append(" where 1 = 1");
       sqlBd.append(SQL_SELECT_MOVIE_DETAIL_DTO)
-           .append(" "
-                + " from movies m "
-                + " left join app_params ap on m.resolution = ap.id"
-                + " left join app_params ap2 on m.language = ap2.id"
-                + " where 1 = 1 ");
+           .append(" from movies m ")
+           .append(" left join app_params ap on m.resolution = ap.id")
+           .append(" left join app_params ap2 on m.language = ap2.id")
+           .append(" where 1 = 1 ");
       if(!StringUtils.isEmpty(titleS)) {
         sqlBd.append(" and lower(m.en_convert_title) ~ :titleS");
         sqlCountBd.append(" and lower(m.en_convert_title) ~ :titleS");
@@ -169,10 +182,10 @@ public class MovieDaoImpl implements MovieDao {
           StringBuilder countrySqlBd = new StringBuilder();
           for(int i = 0; i<countryS.length;i++) {
             String countryi = (new StringBuilder("country").append(i)).toString();
-            countrySqlBd.append(" and :"+ countryi + " = any("
-                + " select cast(unnest(string_to_array(country,',')) as int)"
-                + " from movies m1 "
-                + " where m.id = m1.id )");
+            countrySqlBd.append(" and :"+ countryi + " = any(")
+                        .append(" select cast(unnest(string_to_array(country,',')) as int)")
+                        .append(" from movies m1 ")
+                        .append(" where m.id = m1.id )");
           }
           sqlBd.append(countrySqlBd);
           sqlCountBd.append(countrySqlBd);
@@ -183,10 +196,10 @@ public class MovieDaoImpl implements MovieDao {
           StringBuilder typeSqlBd = new StringBuilder();
           for(int i = 0; i<typeS.length;i++) {
             String typei = (new StringBuilder("type").append(i)).toString();
-            typeSqlBd.append(" and :"+ typei + " = any("
-                + " select cast(unnest(string_to_array(movie_type,',')) as int)"
-                + " from movies m1 "
-                + " where m.id = m1.id )");
+            typeSqlBd.append(" and :"+ typei + " = any(")
+                      .append(" select cast(unnest(string_to_array(movie_type,',')) as int)")
+                      .append(" from movies m1 ")
+                      .append(" where m.id = m1.id )");
           }
           sqlBd.append(typeSqlBd);
           sqlCountBd.append(typeSqlBd);
@@ -194,7 +207,7 @@ public class MovieDaoImpl implements MovieDao {
       }
       
       sqlBd.append(") ")
-           .append(SQL_SELECT_COUNTRYNAME_AND_MOVIETYPENAME)
+           .append(SQL_SELECT_COUNTRYNAME_AND_MOVIETYPENAME_AND_CASTSNAME)
            .append(" from table1")
            .append(" order by title")
            .append(" limit :recordsPP")

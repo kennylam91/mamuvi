@@ -51,4 +51,8 @@ public class MovieDTO implements Serializable {
   private String imgUrl;
   
   private String director;
+  
+  private String trailer;
+  
+  private String casts;
 }

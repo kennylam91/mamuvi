@@ -71,6 +71,12 @@ public class Movie {
   @Column(name = "en_convert_title")
   private String enConvertTitle;
   
+  @Column(name = "trailer")
+  private String trailer;
+  
+  @Column(name = "casts")
+  private String casts;
+  
   public static Movie mapFromMovieDTO(MovieDTO movieDTO) {
     Movie movie = new Movie();
     movie.setId(movieDTO.getId());
@@ -88,6 +94,8 @@ public class Movie {
     movie.setImgUrl(movieDTO.getImgUrl());
     movie.setMovieUrl(movieDTO.getMovieUrl());
     movie.setEnConvertTitle(CommonUtils.convertVnToEn(movieDTO.getTitle()));
+    movie.setTrailer(movieDTO.getTrailer());
+    movie.setCasts(movieDTO.getCasts());
     return movie;
   }
 }
