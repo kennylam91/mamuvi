@@ -29,6 +29,8 @@ public class MovieSearchDTO implements Serializable{
   
   private Long[] typeS;
   
+  private Long[] idsS;
+  
   private Long page;
   
   private Long recordsPP; //Records Per Page

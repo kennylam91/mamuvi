@@ -158,6 +158,8 @@ public class MovieDaoImpl implements MovieDao {
     String titleS = movieS.getTitleS();
     Long[] countryS = movieS.getCountryS();
     Long[] typeS = movieS.getTypeS();
+    Long[] idsS = movieS.getIdsS();
+    List<Long> idList = null;
     Long recordsPP = movieS.getRecordsPP();
     Long page = movieS.getPage();
     recordsPP = recordsPP!= null? recordsPP : 20L;
@@ -205,6 +207,13 @@ public class MovieDaoImpl implements MovieDao {
           sqlCountBd.append(typeSqlBd);
         }
       }
+      if(idsS != null) {
+        if(idsS.length > 0) {
+          idList = Arrays.asList(idsS);
+          sqlBd.append(" and m.id in :idList");
+          sqlCountBd.append(" and m.id in :idList");
+        }
+      }
       
       sqlBd.append(") ")
            .append(SQL_SELECT_COUNTRYNAME_AND_MOVIETYPENAME_AND_CASTSNAME)
@@ -239,6 +248,12 @@ public class MovieDaoImpl implements MovieDao {
             sqlQuery.setParameter(typei,typeS[i]);
             sqlCountQuery.setParameter(typei,typeS[i]);
           }
+        }
+      }
+      if(idsS != null) {
+        if(idsS.length > 0) {
+          sqlQuery.setParameterList("idList", idList);
+          sqlCountQuery.setParameterList("idList", idList);
         }
       }
       sqlQuery.setParameter("recordsPP", recordsPP)

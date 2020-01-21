@@ -29,5 +29,6 @@
  -->
 		<!-- Resource Mapping -->
 		<mapping class="com.app.mamuvi.model.Movie" />
+		<mapping class="com.app.mamuvi.model.User" />
 	</session-factory>
 </hibernate-configuration>
